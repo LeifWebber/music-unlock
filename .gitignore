@@ -364,3 +364,14 @@ __marimo__/
 
 .idea
 desktop.ini
+# Local music, keys and build output
+.DS_Store
+/data/
+/dist/
+/music-unlock
+/music-unlock.exe
+/keys*.json
+/legacy/windows/music.yaml
+
+/unmus
+/unmus.exe
