@@ -67,7 +67,7 @@ try {
     $script:fixture = Join-Path $task 'fixture.exe'
     & go build -o $script:fixture (Join-Path $PSScriptRoot 'testdata/installer_main.go')
     Assert ($LASTEXITCODE -eq 0) 'Could not build fixture.'
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
     $script:architecture = Get-UnmusArchitecture
     Assert ($script:architecture -in @('amd64', 'arm64')) 'Native architecture was not recognized.'
     Make-Archive $script:architecture

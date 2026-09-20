@@ -128,7 +128,7 @@ function Install-Unmus {
         }
         if ($digests.Count -ne 1) { throw 'Missing or ambiguous SHA256 checksum.' }
         if ((Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash -ine $digests[0]) { throw 'SHA256 verification failed.' }
-        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
         $archive = [IO.Compression.ZipFile]::OpenRead($archivePath)
         try {
             $entries = @($archive.Entries | Where-Object { $_.FullName -ceq "$name/unmus.exe" })

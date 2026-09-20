@@ -31,7 +31,7 @@ jobs:
         shell: pwsh
         run: ./scripts/test_install_windows.ps1
       - name: Windows public release install and one-shot smoke test
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && !cancelled()
         shell: powershell
         run: |
           Get-Content ./scripts/install.ps1 -Raw | Invoke-Expression
