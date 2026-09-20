@@ -134,6 +134,8 @@ try {
     $result = Run-Cmd
     Assert ($result.Code -ne 0) 'CMD download error ignored.'
     Assert-Clean
+    # The expected native exit-7 test must not become the CI step's exit code.
+    $global:LASTEXITCODE = 0
     Write-Host 'Windows installer contract tests passed.'
 } finally {
     if ($hadPath) { $pathKey.SetValue('Path', $previousUserPath, $previousKind) } else { $pathKey.DeleteValue('Path', $false) }

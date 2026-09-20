@@ -27,7 +27,7 @@ jobs:
         shell: powershell
         run: ./scripts/test_install_windows.ps1
       - name: Windows installer contracts (PowerShell 7)
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && !cancelled()
         shell: pwsh
         run: ./scripts/test_install_windows.ps1
       - name: Windows public release install and one-shot smoke test

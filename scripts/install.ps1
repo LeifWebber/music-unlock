@@ -27,8 +27,8 @@ namespace Unmus.Installer {
 
 function Get-UnmusArchitecture {
     Initialize-UnmusNative
-    [ushort]$processMachine = 0
-    [ushort]$nativeMachine = 0
+    [System.UInt16]$processMachine = 0
+    [System.UInt16]$nativeMachine = 0
     try {
         if ([Unmus.Installer.Native]::IsWow64Process2([IntPtr](-1), [ref]$processMachine, [ref]$nativeMachine)) {
             switch ($nativeMachine) {
