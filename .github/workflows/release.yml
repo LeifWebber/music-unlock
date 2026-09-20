@@ -1,0 +1,65 @@
+name: Release unmus
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Package all platforms
+        env:
+          RELEASE_REF: ${{ github.ref_name }}
+          RELEASE_TYPE: ${{ github.ref_type }}
+        run: |
+          if [ "$RELEASE_TYPE" = tag ]; then
+            python3 scripts/release.py --version "$RELEASE_REF"
+          else
+            python3 scripts/release.py --version dev
+          fi
+      - name: Verify packaged Linux executable
+        run: |
+          cd dist
+          sha256sum -c SHA256SUMS
+          mkdir smoke
+          tar -xzf music-unlock-*-linux-amd64.tar.gz -C smoke
+          binary=$(find smoke -type f -name unmus)
+          "$binary" --version
+          "$binary" ../internal/ncm/testdata/tagged-flac.ncm smoke-output --offline
+          test -s smoke-output/tagged-flac.flac
+      - uses: actions/upload-artifact@v4
+        with:
+          name: music-unlock-release
+          path: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/SHA256SUMS
+            dist/install.sh
+          if-no-files-found: error
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: music-unlock-release
+          path: release
+      - name: Publish verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" release/* --verify-tag --title "unmus $RELEASE_TAG" --notes-file docs/release-notes.md
