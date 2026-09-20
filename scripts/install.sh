@@ -18,7 +18,7 @@ main() {
       *) echo "Unknown installer option: $1" >&2; return 2 ;;
     esac
   done
-  case "$(uname -s)" in Darwin) os=darwin ;; Linux) os=linux ;; *) echo '请从 GitHub Releases 下载 Windows ZIP。' >&2; return 1 ;; esac
+  case "$(uname -s)" in Darwin) os=darwin ;; Linux) os=linux ;; *) echo 'Windows 请使用 install.ps1 或 install.cmd，参见 README。' >&2; return 1 ;; esac
   case "$(uname -m)" in arm64|aarch64) arch=arm64 ;; x86_64|amd64) arch=amd64 ;; *) echo 'Unsupported CPU architecture' >&2; return 1 ;; esac
   command -v curl >/dev/null || { echo 'curl is required' >&2; return 1; }
   temp=$(mktemp -d "${TMPDIR:-/tmp}/music-unlock.XXXXXXXX")

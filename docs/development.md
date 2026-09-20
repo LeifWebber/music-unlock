@@ -35,7 +35,7 @@ Windows CI 另用专门启动的测试子进程验证只读内存读取，不读
 - `internal/ncm`：网易云离线解密及 FLAC/ID3 标签回填。
 - `internal/qmc`：解密、尾标解析和音频格式识别。
 - `internal/qqmusic`：平台登录态读取与 QQ 音乐密钥接口。
-- `scripts/install.sh`：校验后安装或单次运行。
+- `scripts/install.sh`、`install.ps1`、`install.cmd`：校验后安装或单次运行。
 - `scripts/release.py`：六种平台构建、压缩包与 SHA-256 校验和。
 - `legacy/windows`：原 Python/Frida 实现，归档保留，不参与构建。
 
@@ -54,3 +54,5 @@ macOS 安装包暂未做 Developer ID 签名和公证。
 `internal/ncm/testdata/generate.py` 使用本地生成的正弦波、Python 参考流密码和 OpenSSL AES 生成固定的 NCM 测试向量；重建需要 FFmpeg/OpenSSL，日常测试及用户运行不需要。测试覆盖 FLAC/MP3、标签与封面、缺少元数据、封面预留区、分块读取、异常长度、损坏填充与截断头。`go test ./internal/ncm -fuzz FuzzOpen -fuzztime 10s` 可执行有界模糊测试。
 
 真实 NCM 样本已验证 96 kHz / 24-bit 双声道 FLAC、156 秒时长、标签和封面、FFmpeg 全曲解码。音频帧与独立 Python/OpenSSL 解密结果逐字节一致，解码 PCM MD5 与 FLAC STREAMINFO 一致；源文件 SHA-256 保持不变。个人样本、完整解密参考及报告不进入版本库。
+
+Windows CI 分别在 PowerShell 5.1 和 7 中测试安装器，覆盖校验失败、参数与退出码、路径含空格/中文、PATH 去重、归档异常及 CMD 引导清理；另从公开 Release 验证 IEX 安装和一次性运行。可以在 Windows 上执行 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test_install_windows.ps1` 重现契约测试。

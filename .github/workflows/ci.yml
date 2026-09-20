@@ -22,3 +22,20 @@ jobs:
       - run: go test -race ./...
       - run: go build -trimpath ./cmd/unmus
       - run: python -m unittest discover -s scripts -p 'test_*.py'
+      - name: Windows installer contracts (PowerShell 5.1)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: ./scripts/test_install_windows.ps1
+      - name: Windows installer contracts (PowerShell 7)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/test_install_windows.ps1
+      - name: Windows public release install and one-shot smoke test
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          Get-Content ./scripts/install.ps1 -Raw | Invoke-Expression
+          unmus --version
+          if ($LASTEXITCODE -ne 0) { throw 'Installed program failed' }
+          & ([scriptblock]::Create((Get-Content ./scripts/install.ps1 -Raw))) -Run -Arguments @('--version')
+          if ($LASTEXITCODE -ne 0) { throw 'One-shot program failed' }

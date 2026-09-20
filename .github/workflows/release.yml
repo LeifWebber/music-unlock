@@ -44,6 +44,8 @@ jobs:
             dist/*.zip
             dist/SHA256SUMS
             dist/install.sh
+            dist/install.ps1
+            dist/install.cmd
           if-no-files-found: error
   publish:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')

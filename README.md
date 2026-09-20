@@ -25,7 +25,21 @@ curl -fsSL https://raw.githubusercontent.com/LeifWebber/music-unlock/main/script
 
 ### Windows
 
-在 [Releases](https://github.com/LeifWebber/music-unlock/releases) 下载名称以 `windows-amd64.zip` 结尾的压缩包，解压后在终端运行 `unmus.exe`。使用 ARM 版 Windows 时，选择 `windows-arm64.zip` 结尾的版本。
+在 **PowerShell** 中执行：
+
+```powershell
+irm https://raw.githubusercontent.com/LeifWebber/music-unlock/main/scripts/install.ps1 | iex
+```
+
+或者在 **CMD** 中执行：
+
+```bat
+curl.exe -fsSL https://raw.githubusercontent.com/LeifWebber/music-unlock/main/scripts/install.cmd -o install.cmd && install.cmd && del install.cmd
+```
+
+脚本自动选择 x64/ARM64，校验 SHA-256，并安装到 `%LOCALAPPDATA%\Programs\unmus`，加入当前用户的 `PATH`，不需要管理员权限。重新打开终端后即可运行 `unmus`。已有程序默认不覆盖；升级、自定义位置等选项见[高级安装说明](docs/publishing.md#windows-安装器选项)。
+
+也可以从 [Releases](https://github.com/LeifWebber/music-unlock/releases) 下载 ZIP 手动解压。
 
 ### 不安装，直接运行
 
@@ -43,7 +57,15 @@ curl -fsSL https://raw.githubusercontent.com/LeifWebber/music-unlock/main/script
   | sh -s -- --run "歌曲.ncm" "已转换"
 ```
 
-无需安装 Go、Python、Node.js 或 Rust。Windows 用户直接使用上方的 ZIP 可执行文件。
+Windows PowerShell 一次性运行：
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/LeifWebber/music-unlock/main/scripts/install.ps1))) -Run
+```
+
+需要指定路径时，在末尾加 `-Arguments @("源文件或目录", "输出目录")`；只有一个路径时仍表示目标目录。一次性运行不安装程序、不修改 `PATH`，结束后清理临时程序。
+
+所有方式均无需安装 Go、Python、Node.js 或 Rust。
 
 ## 开始转换
 
@@ -88,9 +110,9 @@ unmus "我的音乐" "已转换"
 Windows PowerShell 示例：
 
 ```powershell
-.\unmus.exe
-.\unmus.exe "D:\Music\已转换"
-.\unmus.exe "C:\Music\QQ音乐" "D:\Music\已转换"
+unmus
+unmus "D:\Music\已转换"
+unmus "C:\Music\QQ音乐" "D:\Music\已转换"
 ```
 
 路径含空格时请加引号。转换失败的文件会单独列出，不影响其他歌曲继续处理。

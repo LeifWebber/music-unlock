@@ -59,8 +59,9 @@ def main():
         print(archive.name, flush=True)
     sums = [f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n" for path in archives]
     (dist / "SHA256SUMS").write_text("".join(sums), encoding="utf-8")
-    shutil.copyfile(ROOT / "scripts/install.sh", dist / "install.sh")
-    print("Prepared dist/SHA256SUMS and dist/install.sh", flush=True)
+    for installer in ("install.sh", "install.ps1", "install.cmd"):
+        shutil.copyfile(ROOT / "scripts" / installer, dist / installer)
+    print("Prepared dist/SHA256SUMS and shell/PowerShell/CMD installers", flush=True)
 
 
 if __name__ == "__main__":
