@@ -90,8 +90,8 @@ try {
     $unicode = ([char]0x6b4c).ToString() + [char]0x66f2 + ' with spaces.ncm'
     $argumentResult = Install-Unmus -Run -Arguments @($unicode, 'output with spaces', '--offline') | ConvertFrom-Json
     Assert ($argumentResult.Count -eq 3 -and $argumentResult[0] -ceq $unicode -and $argumentResult[2] -ceq '--offline') 'Arguments changed.'
-    $emptyResult = @(Install-Unmus -Run | ConvertFrom-Json)
-    Assert (@($emptyResult).Count -eq 0) 'Zero-argument mode changed.'
+    $emptyResult = Install-Unmus -Run
+    Assert ($emptyResult -ceq '[]') 'Zero-argument mode changed.'
     $null = Install-Unmus -Run -Arguments @('fail')
     Assert ($global:LASTEXITCODE -eq 7) 'Native exit code lost.'
     Assert-Clean
